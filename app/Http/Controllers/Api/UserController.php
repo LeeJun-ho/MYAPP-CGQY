@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Validators\UserValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Exception;
 
 class UserController extends Controller
 {
@@ -36,15 +38,15 @@ class UserController extends Controller
     }
 
     public function getMyInfoAction() {
-        return [
+        return response()->json([
             'data' => Auth::user(),
-        ];
+        ], 200);
     }
 
     public function getMyOrdersAction() {
-        return [
+        return response()->json([
             'data' => Auth::user()->orders()->paginate(10),
-        ];
+        ], 200);
     }
 
     public function getCollectionAction(Request $request) {
@@ -62,20 +64,42 @@ class UserController extends Controller
             }
         }
 
-        return [
+        return response()->json([
             'data' => $users,
-        ];
+        ], 200);
     }
 
-    public function getAction(User $user) {
-        return [
-            'data' => $user,
-        ];
+    public function getAction($id) {
+        try {
+            $res['data'] = User::findOrFail($id);
+            $resCode = 200;
+        } catch(ModelNotFoundException $e) {
+            error_log($e);
+            $res['message'] = '존재하지 않는 사용자입니다.';
+            $resCode = 404;
+        } catch (Exception $e) {
+            error_log($e);
+            $res['message'] = '사용자 조회에 실패하였습니다.';
+            $resCode = 500;
+        }
+
+        return response()->json($res, $resCode);
     }
 
-    public function getOrdersAction(User $user) {
-        return [
-            'data' => $user->orders()->paginate(10),
-        ];
+    public function getOrdersAction($id) {
+        try {
+            $res['data'] = User::findOrFail($id)->orders()->paginate(10);
+            $resCode = 200;
+        } catch(ModelNotFoundException $e) {
+            error_log($e);
+            $res['message'] = '존재하지 않는 사용자입니다.';
+            $resCode = 404;
+        } catch (Exception $e) {
+            error_log($e);
+            $res['message'] = '주문 조회에 실패하였습니다.';
+            $resCode = 500;
+        }
+
+        return response()->json($res, $resCode);
     }
 }
