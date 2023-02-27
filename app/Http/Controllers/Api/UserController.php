@@ -3,17 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Validators\UserValidator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
     public function postSignupAction(Request $request) {
         $validator = UserValidator::postSignupValidation($request);
-        
-        if ($validator->fails()) return response()->json($validator->errors(), 422);
+        if ($validator->fails()) return response()->json(['message' => $validator->errors()], 422);
 
         try {
             $user = User::create([
@@ -24,7 +23,6 @@ class UserController extends Controller
                 'email' => $request->email,
                 'gender' => $request->gender ? $request->gender : null,
             ]);
-            error_log($user);
 
             $res['data'] = $user;
             $res['message'] = '회원 등록에 성공했습니다.';
