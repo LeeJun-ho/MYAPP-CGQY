@@ -20,7 +20,11 @@ Route::post('signup', [UserController::class, 'postSignupAction']);
 Route::post('login', [AuthControlle::class, 'postLoginAction']);
 Route::middleware('auth:api')->group(function () {
     Route::post('logout', [AuthControlle::class, 'postLogoutAction']);
+
+    Route::get('myinfo', [UserController::class, 'getMyInfoAction']);
+    Route::get('myorders', [UserController::class, 'getMyOrdersAction']);
+    Route::prefix('users')->group(function () {
+        Route::get('/{user}', [UserController::class, 'getAction']);
+        Route::get('/{user}/orders', [UserController::class, 'getOrdersAction']);
+    });
 });
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });

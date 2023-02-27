@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Validators\UserValidator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -33,5 +33,29 @@ class UserController extends Controller
         }
 
         return response()->json($res, $resCode);
+    }
+
+    public function getMyInfoAction() {
+        return [
+            'data' => Auth::user(),
+        ];
+    }
+
+    public function getMyOrdersAction() {
+        return [
+            'data' => Auth::user()->Orders()->paginate(10),
+        ];
+    }
+
+    public function getAction(User $user) {
+        return [
+            'data' => $user,
+        ];
+    }
+
+    public function getOrdersAction(User $user) {
+        return [
+            'data' => $user->Orders()->paginate(10),
+        ];
     }
 }
