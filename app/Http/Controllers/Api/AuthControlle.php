@@ -28,7 +28,7 @@ class AuthControlle extends Controller
 
     public function postLogoutAction(Request $request) {
         if (Auth::check()) {
-            Auth::user()->OauthAccessTokens()->delete();
+            Auth::user()->oauthAccessTokens()->delete();
 
             $res['message'] = '로그아웃에 성공했습니다.';
             return response()->json($res, 200);

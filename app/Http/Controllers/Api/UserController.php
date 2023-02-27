@@ -43,7 +43,27 @@ class UserController extends Controller
 
     public function getMyOrdersAction() {
         return [
-            'data' => Auth::user()->Orders()->paginate(10),
+            'data' => Auth::user()->orders()->paginate(10),
+        ];
+    }
+
+    public function getCollectionAction(Request $request) {
+        $query = User::query();
+        if ($request->get('keyword')) {
+            $query
+                ->where('name', 'like', '%'.$request->get('keyword').'%')
+                ->orWhere('email', 'like', '%'.$request->get('keyword').'%');
+        }
+
+        $users = $query->paginate(10);
+        foreach ($users as $user) {
+            if ($user->id) {
+                $user['latest_order'] = $user->latestOrder;
+            }
+        }
+
+        return [
+            'data' => $users,
         ];
     }
 
@@ -55,7 +75,7 @@ class UserController extends Controller
 
     public function getOrdersAction(User $user) {
         return [
-            'data' => $user->Orders()->paginate(10),
+            'data' => $user->orders()->paginate(10),
         ];
     }
 }

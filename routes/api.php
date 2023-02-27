@@ -24,6 +24,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('myinfo', [UserController::class, 'getMyInfoAction']);
     Route::get('myorders', [UserController::class, 'getMyOrdersAction']);
     Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'getCollectionAction']);
         Route::get('/{user}', [UserController::class, 'getAction']);
         Route::get('/{user}/orders', [UserController::class, 'getOrdersAction']);
     });
