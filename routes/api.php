@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthControlle;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\UserController;
 
 /*
@@ -27,5 +28,9 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/', [UserController::class, 'getCollectionAction']);
         Route::get('/{user}', [UserController::class, 'getAction']);
         Route::get('/{user}/orders', [UserController::class, 'getOrdersAction']);
+    });
+
+    Route::prefix('orders')->group(function () {
+        Route::post('/', [OrderController::class, 'postAction']);
     });
 });
