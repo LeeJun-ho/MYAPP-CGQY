@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\Validator;
 
 class UserValidator
 {
+    public static function postLoginValidation(Request $request) {
+        return Validator::make($request->all(), [
+            'email' => ['required','email','max:100'],
+            'password' => ['required','min:10','max:20'],
+        ]);
+    }
+
     public static function postSignupValidation(Request $request) {
         return Validator::make($request->all(), [
             'name' => ['required','regex:/^[가-힣a-zA-Z\s]+$/','max:20'],
