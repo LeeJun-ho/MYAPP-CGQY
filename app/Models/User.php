@@ -47,11 +47,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function OauthAccessTokens() {
+    public function oauthAccessTokens() {
         return $this->hasMany(OauthAccessToken::class);
     }
 
-    public function Orders() {
+    public function orders() {
         return $this->hasMany(Order::class);
+    }
+
+    public function latestOrder() {
+        return $this->hasOne(Order::class)->latestOfMany();
     }
 }
