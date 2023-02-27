@@ -11,7 +11,7 @@ class AuthControlle extends Controller
 {
     public function postLoginAction(Request $request) {
         $validator = UserValidator::postLoginValidation($request);
-        if ($validator->fails()) return response()->json($validator->errors(), 422);
+        if ($validator->fails()) return response()->json(['message' => $validator->errors()], 422);
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
@@ -22,7 +22,18 @@ class AuthControlle extends Controller
 
             return response()->json($res, 200);
         } else {
-            return response()->json(['error' => '로그인에 실패했습니다.'], 401);
+            return response()->json(['message' => '로그인에 실패했습니다.'], 401);
+        }
+    }
+
+    public function postLogoutAction(Request $request) {
+        if (Auth::check()) {
+            Auth::user()->OauthAccessTokens()->delete();
+
+            $res['message'] = '로그아웃에 성공했습니다.';
+            return response()->json($res, 200);
+        } else {
+            return response()->json(['message' => '로그아웃에 실패했습니다.'], 401);
         }
     }
 }
